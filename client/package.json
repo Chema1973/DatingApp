@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "prueba": "start & dotnet watch run --project ..\\APIDatingApp\\APIDatingApp.csproj",
+    "prueba2": "dotnet watch run --project ..\\APIDatingApp\\APIDatingApp.csproj & start"
   },
   "private": true,
   "dependencies": {

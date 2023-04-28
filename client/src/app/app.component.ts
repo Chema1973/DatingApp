@@ -1,5 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { User } from './_models/user';
+import { AccountService } from './_services/account.service';
 
 @Component({
   selector: 'app-root',
@@ -7,19 +8,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
   title: string = 'Dating App';
-  users: any;
-
-  constructor(private http: HttpClient){}
+  
+  constructor(
+    private accountService: AccountService){}
   
   ngOnInit(): void {
-    this.http.get('https://localhost:5001/api/users')
-      .subscribe({
-        next: response => this.users = response,
-        error: error => console.log(error),
-        complete: () => console.log('Request was done')
-      })
+    // Cuando entramos en la aplicación comprobamos si el usuario ha dejado se ha logado y ha salido sin hacer logout
+    this.setCurrentUser();
+  }
+
+
+
+  setCurrentUser() {
+    const userString = localStorage.getItem('user');
+    console.log('setCurrentUser::1');
+    console.log(userString);
+    if (!userString) return;
+    const user: User = JSON.parse(userString);
+    console.log('setCurrentUser::2');
+    this.accountService.setCurrentUser(user);
+    // --> Se llama al "setCurrentUser" del "accountService"
+    console.log('setCurrentUser::3');
   }
 
   

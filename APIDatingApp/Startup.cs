@@ -1,4 +1,3 @@
-/*
 using APIDatingApp.Data;
 using APIDatingApp.Services;
 using APIDatingApp.Interfaces;
@@ -6,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using APIDatingApp.Extensions;
 
 namespace APIDatingApp
 {
@@ -25,24 +25,10 @@ namespace APIDatingApp
 
             // services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddApplicationServices(Configuration);
 
-            services.AddDbContext<DataContext>(opt => {
-                opt.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            services.AddAIdentityServices(Configuration);
 
-            services.AddCors();
-
-            services.AddScoped<ITokenService, TokenService>();
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
-                    options.TokenValidationParameters = new TokenValidationParameters{
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"])),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -54,6 +40,8 @@ namespace APIDatingApp
             }
 
             app.UseHttpsRedirection();
+
+            app.UseRouting();
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
@@ -68,4 +56,4 @@ namespace APIDatingApp
 
         }
     }
-}*/
+}

@@ -48,7 +48,7 @@ namespace APIDatingApp.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(LoginDTO loginDto){
+        public async Task<ActionResult<UserDto>> Login(LoginDTO loginDto){
             var user = await _context.Users.SingleOrDefaultAsync(a => a.UserName == loginDto.UserName);
 
             if (user == null) return Unauthorized("Invalid username");
@@ -61,7 +61,12 @@ namespace APIDatingApp.Controllers
                 if (computedHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid password");
             }
 
-            return user;
+            return new UserDto{
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
+
+            // return user;
         }
 
     }
