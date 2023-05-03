@@ -6,7 +6,7 @@ namespace APIDatingApp.Extensions
 {
     public static class IdentityServiceExtensions
     {
-        public static IServiceCollection AddAIdentityServices(this IServiceCollection services,
+        public static IServiceCollection AddIdentityServices(this IServiceCollection services,
             IConfiguration config)
         {
 

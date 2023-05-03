@@ -1,5 +1,7 @@
 import { useAnimation } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Observable, of } from 'rxjs';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
@@ -14,7 +16,9 @@ export class NavComponent implements OnInit {
   model: any = {}
   // currentUser$: Observable<User | null> = of(null)
 
-  constructor(public accountService: AccountService) {}
+  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService
+    ) {}
+  // Con "private router: Router" permitiremos la navegación por código
 
   ngOnInit(): void {
     // this.currentUser$ = this.accountService.currentUser$;
@@ -33,13 +37,16 @@ export class NavComponent implements OnInit {
     // --> 
     console.log(this.model);
     this.accountService.login(this.model).subscribe({
+      /*
       next: response => {
         console.log(this.accountService.currentUser$);
         console.log('nav-login');
         console.log(this.accountService.currentUser$);
         // console.log(response);
-      },
-      error: error => console.log(error)
+        this.router.navigateByUrl('/members');
+      },*/
+      next: _ => this.router.navigateByUrl('/members'), // El '_' indica que no hay respuesta (al igual que '()')
+      error: error => this.toastr.error(error.error) // console.log(error) // 
     })
   }
 
@@ -47,6 +54,8 @@ export class NavComponent implements OnInit {
     this.accountService.logout();
     this.model.username = '';
     this.model.password = '';
+    // NAVEGACIÓN
+    this.router.navigateByUrl('/');
   }
 
 }

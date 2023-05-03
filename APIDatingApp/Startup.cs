@@ -27,7 +27,9 @@ namespace APIDatingApp
             services.AddSwaggerGen();
             services.AddApplicationServices(Configuration);
 
-            services.AddAIdentityServices(Configuration);
+            services.AddIdentityServices(Configuration);
+
+            services.AddPruebasServiceExtensions(Configuration);
 
         }
 
