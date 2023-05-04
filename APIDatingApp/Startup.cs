@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using APIDatingApp.Extensions;
 using APIDatingApp.Middleware;
+using System.Text.Json.Serialization;
 
 namespace APIDatingApp
 {
@@ -22,6 +23,10 @@ namespace APIDatingApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            // services.AddControllers().AddJsonOptions(x =>
+            // x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+            
+            // .AddNewtonsoftJson();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
             // services.AddEndpointsApiExplorer();
@@ -35,7 +40,7 @@ namespace APIDatingApp
         }
 
         /// Middleware
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void  Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Añadimos nuestro propio control de errores
             app.UseMiddleware<ExceptionMiddleware>();
@@ -53,14 +58,30 @@ namespace APIDatingApp
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
 
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseAuthorization();
+            
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
+
+            using var scope = app.ApplicationServices.CreateScope();
+            var services = scope.ServiceProvider;
+            try
+            {
+                var context = services.GetRequiredService<DataContext>();
+                await context.Database.MigrateAsync();
+                // Hacemos la migración inicial de datos
+                await Seed.SeedUsers(context);
+
+            } catch (Exception ex)
+            {
+                var logger = services.GetService<ILogger<Startup>>();
+                logger.LogError(ex, "An error occurred during migration");
+            }
 
         }
     }
