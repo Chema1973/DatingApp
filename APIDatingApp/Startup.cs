@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using APIDatingApp.Extensions;
+using APIDatingApp.Middleware;
 
 namespace APIDatingApp
 {
@@ -33,12 +34,17 @@ namespace APIDatingApp
 
         }
 
+        /// Middleware
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            // Añadimos nuestro propio control de errores
+            app.UseMiddleware<ExceptionMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                // app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();

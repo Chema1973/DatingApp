@@ -45,8 +45,8 @@ export class NavComponent implements OnInit {
         // console.log(response);
         this.router.navigateByUrl('/members');
       },*/
-      next: _ => this.router.navigateByUrl('/members'), // El '_' indica que no hay respuesta (al igual que '()')
-      error: error => this.toastr.error(error.error) // console.log(error) // 
+      next: _ => this.router.navigateByUrl('/members') //, // El '_' indica que no hay respuesta (al igual que '()')
+      // error: error => this.toastr.error(error.error) // console.log(error) // 
     })
   }
 
