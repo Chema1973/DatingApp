@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+// import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ToastrService } from 'ngx-toastr';
+// import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
@@ -11,16 +11,16 @@ export class HomeComponent implements OnInit {
   registerMode = false;
   users: any;
 
-  constructor(private http: HttpClient, private toastr: ToastrService) {}
+  constructor() {} //private http: HttpClient, private toastr: ToastrService) {}
 
   ngOnInit(): void {
-    this.getUsers();
+    // this.getUsers();
   }
   
   registerToggle() {
     this.registerMode = !this.registerMode;
   }
-
+/*
   getUsers() {
     this.http.get('https://localhost:5001/api/users')
     .subscribe({
@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
       error: error => this.toastr.error(error),
       complete: () => this.toastr.info('Request was done')
     })
-  }
+  }*/
 
   cancelRegisterMode(event: boolean) {
     this.registerMode = event;
