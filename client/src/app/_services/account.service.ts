@@ -53,6 +53,7 @@ export class AccountService {
   setCurrentUser(user: User) {
     // Se le llama al ""arrancar" la aplicación
     console.log('setCurrentUser-Login::1');
+    console.log(user);
     this.currentUserSource.next(user);
     console.log('setCurrentUser-Login::2');
   }

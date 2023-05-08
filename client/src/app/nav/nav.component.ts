@@ -2,7 +2,7 @@ import { useAnimation } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Observable, of } from 'rxjs';
+import { Observable, of, take } from 'rxjs';
 import { User } from '../_models/user';
 import { AccountService } from '../_services/account.service';
 
@@ -24,6 +24,14 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
     // this.currentUser$ = this.accountService.currentUser$;
     // this.getCurrentUser();
+    this.accountService.currentUser$.pipe(take(1)).subscribe({
+      next: response => {
+        console.log(response);
+        if (!response) return;
+        console.log(response);
+        this.username = response.userName;
+      }
+    })
   }
 /*
   getCurrentUser() {
@@ -38,7 +46,7 @@ export class NavComponent implements OnInit {
     // --> 
     console.log(this.model);
     this.accountService.login(this.model).subscribe({
-      
+      // this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: response => {
         console.log(this.accountService.currentUser$);
         console.log(response);
