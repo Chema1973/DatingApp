@@ -11,12 +11,14 @@ namespace APIDatingApp.Controllers
 {
     public class AccountController : BaseApiController
     {
+        private readonly IUserRepository _userRepository;
         private readonly DataContext _context;
         private readonly ITokenService _tokenService;
 
-        public AccountController(DataContext context, ITokenService tokenService){
+        public AccountController(DataContext context, ITokenService tokenService, IUserRepository userRepository){
             _context = context;
             _tokenService = tokenService;
+            _userRepository = userRepository;
         }
 
         [HttpPost("register")]
@@ -49,7 +51,9 @@ namespace APIDatingApp.Controllers
 
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDTO loginDto){
-            var user = await _context.Users.SingleOrDefaultAsync(a => a.UserName == loginDto.UserName);
+            // var user = await _context.Users.SingleOrDefaultAsync(a => a.UserName == loginDto.UserName);
+
+            var user  = await _userRepository.GetUserByUserNameAsync(loginDto.UserName);
 
             if (user == null) return Unauthorized("Invalid username");
 
@@ -63,7 +67,8 @@ namespace APIDatingApp.Controllers
 
             return new UserDto{
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
             };
 
             // return user;

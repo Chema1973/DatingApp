@@ -25,8 +25,9 @@ export class AccountService {
         const user = response;
         if (user) {
           console.log('Account-Login::1');
-          localStorage.setItem('user', JSON.stringify(user));
-          this.currentUserSource.next(user);
+          // localStorage.setItem('user', JSON.stringify(user));
+          // this.currentUserSource.next(user);
+          this.setCurrentUser(user);
           // --> Es un eventEmitter. Dispara un evento a todos los suscriptores que están escuchando
           //     Es decir, está llamando a todos los suscriptores de "currentUser$"
           console.log('Account-Login::2');
@@ -40,8 +41,9 @@ export class AccountService {
       map(
           user => {
             if (user){
-              localStorage.setItem('user', JSON.stringify(user));
-              this.currentUserSource.next(user);
+              // localStorage.setItem('user', JSON.stringify(user));
+              // this.currentUserSource.next(user);
+              this.setCurrentUser(user);
             }
             // return user;
             // --> Si devolvemos al "user" en "register.component", en el método de registro
@@ -54,6 +56,7 @@ export class AccountService {
     // Se le llama al ""arrancar" la aplicación
     console.log('setCurrentUser-Login::1');
     console.log(user);
+    localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
     console.log('setCurrentUser-Login::2');
   }

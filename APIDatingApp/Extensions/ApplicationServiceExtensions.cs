@@ -1,4 +1,5 @@
 using APIDatingApp.Data;
+using APIDatingApp.Helpers;
 using APIDatingApp.Interfaces;
 using APIDatingApp.Services;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,10 @@ namespace APIDatingApp.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.Configure<CloudinarySettings>(config.GetSection("CloudinarySettings"));
+            // --> Cogemos la configuración de Cloudinary
+            services.AddScoped<IPhotoService, PhotoService>();
 
             return services;
         }
