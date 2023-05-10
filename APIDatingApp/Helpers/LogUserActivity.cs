@@ -18,7 +18,7 @@ namespace APIDatingApp.Helpers
 
             var repo = resultContext.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
             // --> Podemos coger el repositorio que queramos
-            var user = await repo.GetUserByIdAsync(int.Parse(userId));
+            var user = await repo.GetUserByIdAsync(userId);
             user.LastActive = DateTime.UtcNow;
             await repo.SaveAllAsync();
         }

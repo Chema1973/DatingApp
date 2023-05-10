@@ -37,6 +37,10 @@ namespace APIDatingApp.Entities
         public List<Photo> Photos { get; set; } = new(); // new List<Photo>();
         // --> Relación con la tabla "Photos" (many)
 
+        public List<UserLike> LikedByUsers { get; set; }
+
+        public List<UserLike> LikedUsers { get; set; }
+
         // public int GetAge()
         // {
         //     return DateOfBirth.CalculateAge();
