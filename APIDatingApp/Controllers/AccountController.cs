@@ -53,7 +53,8 @@ namespace APIDatingApp.Controllers
             return new UserDto{
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs
+                KnownAs = user.KnownAs,
+                Gender = user.Gender
             };
         }
 
@@ -81,7 +82,8 @@ namespace APIDatingApp.Controllers
                 UserName = user.UserName,
                 Token = _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-                KnownAs = user.KnownAs
+                KnownAs = user.KnownAs,
+                Gender = user.Gender
             };
 
             // return user;

@@ -3,6 +3,7 @@ using APIDatingApp.Data;
 using APIDatingApp.DTOs;
 using APIDatingApp.Entities;
 using APIDatingApp.Extensions;
+using APIDatingApp.Helpers;
 using APIDatingApp.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -36,8 +37,23 @@ namespace APIDatingApp.Controllers
 
         // [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers()
+        public async Task<ActionResult<PagedList<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
         {
+
+            var currentUser = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            userParams.CurrentUsername = currentUser.UserName;
+
+            if (string.IsNullOrEmpty(userParams.Gender))
+            {
+                userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+            }
+
+            var users = await _userRepository.GetMembersAsync(userParams);
+
+            Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
+
+            return Ok(users);
+
             // var users = await _context.Users.ToListAsync();
             // return users;
             // return Ok(await _userRepository.GetUsersAsync());
@@ -47,8 +63,7 @@ namespace APIDatingApp.Controllers
             // var usersToReturn  = _mapper.Map<IEnumerable<MemberDTO>>(users);
 
             // return Ok(usersToReturn);
-
-            return Ok(await _userRepository.GetMembersAsync());
+           
         }
 
         

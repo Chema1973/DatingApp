@@ -1,5 +1,6 @@
 using APIDatingApp.DTOs;
 using APIDatingApp.Entities;
+using APIDatingApp.Helpers;
 
 namespace APIDatingApp.Interfaces
 {
@@ -14,7 +15,8 @@ namespace APIDatingApp.Interfaces
 
         Task<AppUser> GetUserByUserNameAsync(string username);
 
-        Task<IEnumerable<MemberDTO>> GetMembersAsync();
+        // Task<IEnumerable<MemberDTO>> GetMembersAsync();
+        Task<PagedList<MemberDTO>> GetMembersAsync(UserParams userParams);
 
         Task<MemberDTO> GetMemberAsync(string username);
     }

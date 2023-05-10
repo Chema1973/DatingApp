@@ -26,6 +26,9 @@ namespace APIDatingApp.Extensions
             // --> Cogemos la configuración de Cloudinary
             services.AddScoped<IPhotoService, PhotoService>();
 
+            services.AddScoped<LogUserActivity>();
+            // --> Añadimos el filtro de actividad del usuario
+
             return services;
         }
     }
