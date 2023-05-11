@@ -1,0 +1,20 @@
+
+using APIDatingApp.DTOs;
+using APIDatingApp.Entities;
+using APIDatingApp.Helpers;
+
+namespace APIDatingApp.Interfaces
+{
+    public interface IMessageRepository
+    {
+        void AddMessage(Message message);
+        void DeleteMessage(Message message);
+
+        Task<Message> GetMessage(int id);
+
+        Task<PagedList<MessageDTO>> GetMessagesForUser(MessageParamas messageParamas);
+        Task<IEnumerable<MessageDTO>> GetMessageThread(string currentUserName, string recipientUserName);
+        Task<bool> SaveAllAsync();
+
+    }
+}

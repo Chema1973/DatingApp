@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using APIDatingApp.Extensions;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace APIDatingApp.Entities
 {
@@ -41,6 +42,9 @@ namespace APIDatingApp.Entities
 
         public List<UserLike> LikedUsers { get; set; }
 
+
+        public List<Message> MessagesSent { get; set; }
+        public List<Message> MessagesReceived { get; set; }
         // public int GetAge()
         // {
         //     return DateOfBirth.CalculateAge();

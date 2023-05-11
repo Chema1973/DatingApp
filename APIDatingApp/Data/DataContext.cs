@@ -13,6 +13,8 @@ namespace APIDatingApp.Data
 
         public DbSet<UserLike> Likes {get; set;}
 
+        public DbSet<Message> Messages {get; set;}
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -33,6 +35,20 @@ namespace APIDatingApp.Data
                 .HasForeignKey(s => s.TargetUserId)
                 .OnDelete(DeleteBehavior.Cascade);
             // --> Una persona (TargetUser) es "gustada" por muchos (LikedByUsers)
+
+            modelBuilder.Entity<Message>()
+                .HasOne(s => s.Recipient)
+                .WithMany(l => l.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict);
+            // --> Una persona (Recipient) tiene muchos mensajes recibidos (MessagesReceived)
+
+            modelBuilder.Entity<Message>()
+                .HasOne(s => s.Sender)
+                .WithMany(l => l.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
+            // --> Una persona (Sender) tiene muchas mensajes enviados (MessagesSent)
+
+
 
         }
     }

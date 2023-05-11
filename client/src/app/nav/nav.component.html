@@ -6,7 +6,13 @@
           <ng-container  *ngIf="accountService.currentUser$ | async">
             <li class="nav-item">
               <!-- NAVEGACIÓN -->
-              <a class="nav-link" routerLink="/members" routerLinkActive="active">Matches</a>
+              <a class="nav-link" routerLink="/members"
+                [routerLinkActiveOptions]="{exact: true}"
+                routerLinkActive="active">Matches</a>
+                <!--[routerLinkActiveOptions]="{exact: true}" ::
+                    Hace que el link no esté activo si la ruta no hace "match" exactamente
+                    Si navegamos a una pestaña de un miembro no se queda seleccionada
+                  -->
             </li>
             <li class="nav-item">
               <a class="nav-link" routerLink="/lists" routerLinkActive="active">Lists</a>

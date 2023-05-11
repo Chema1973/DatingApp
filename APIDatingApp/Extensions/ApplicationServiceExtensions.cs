@@ -30,6 +30,8 @@ namespace APIDatingApp.Extensions
             // --> Añadimos el filtro de actividad del usuario
 
             services.AddScoped<ILikesRepository, LikesRepository>();
+            
+            services.AddScoped<IMessageRepository, MessageRepository>();
 
             return services;
         }

@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
+import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
 import { Member } from 'src/app/_models/member';
+import { Message } from 'src/app/_models/message';
 import { MembersService } from 'src/app/_services/members.service';
+import { MessageService } from 'src/app/_services/message.service';
 
 @Component({
   selector: 'app-member-detail',
@@ -10,14 +13,37 @@ import { MembersService } from 'src/app/_services/members.service';
   styleUrls: ['./member-detail.component.css']
 })
 export class MemberDetailComponent  implements OnInit {
-  member: Member | undefined;
+  @ViewChild('memberTabs') memberTabs?: TabsetComponent;
+  // member: Member | undefined;
+  member: Member = {} as Member;
   galleryOptions: NgxGalleryOptions[] = [];
   galleryImages: NgxGalleryImage[] = [];
-
-  constructor(private memberService: MembersService, private route: ActivatedRoute){}
+  activeTab?: TabDirective;
+  messages: Message[] = [];
+// private memberService: MembersService, 
+  constructor(private route: ActivatedRoute, private messageService: MessageService){}
 
   ngOnInit(): void {
-    this.loadMember();
+    console.log('Traza::1');
+    this.route.data.subscribe({
+      next: data => {
+        console.log('Traza::2');
+        this.member = data['member'];
+        console.log('Traza::3');
+        console.log(this.member);
+        
+      }
+    })
+    // --> Con el "Resolve" y para esta ruta ('members/:username'), hacemos que se encarge de obtener los datos del miembro
+    // this.loadMember();
+
+    this.route.queryParams.subscribe({
+      next: params => {
+        // console.log('Traza::33');
+        // console.log(params);
+        params['tab'] && this.selectTab(params['tab'])
+      }
+    })
 
     this.galleryOptions = [
       {
@@ -30,7 +56,7 @@ export class MemberDetailComponent  implements OnInit {
       }
     ]
 
-    // this.galleryImages = this.getImages();
+    this.galleryImages = this.getImages();
   }
 
   getImages() {
@@ -47,7 +73,7 @@ export class MemberDetailComponent  implements OnInit {
 
     return imageUrls;
   }
-
+/*
   loadMember() {
     var username = this.route.snapshot.paramMap.get('username');
     if (!username) return;
@@ -57,5 +83,39 @@ export class MemberDetailComponent  implements OnInit {
         this.galleryImages = this.getImages();
       }
     })
+  }*/
+
+  selectTab(heading: string) {
+    /*
+    console.log('Traza::selectTab');
+    console.log(heading);
+
+    if (this.memberTabs) {
+      console.log(this.memberTabs);
+      this.memberTabs.tabs.find(x => x.heading === heading)!.active = true;
+    }
+*/
+// Si no ponemos el "Timeout" no detecta aún "this.memberTabs" y no carga la pestaña
+    setTimeout(()=> {
+      if (this.memberTabs) {
+        console.log(this.memberTabs);
+        this.memberTabs.tabs.find(x => x.heading === heading)!.active = true;
+      }
+    }, 0);
+  }
+
+  loadMessages() {
+    if (this.member) {
+      this.messageService.getMessagesThread(this.member.userName).subscribe({
+        next: messages => this.messages = messages
+      })
+    }
+  }
+
+  onTabActivated(data: TabDirective) {
+    this.activeTab = data;
+    if (this.activeTab.heading === 'Messages') {
+      this.loadMessages();
+    }
   }
 }
