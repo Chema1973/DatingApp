@@ -1,19 +1,20 @@
 using System.ComponentModel.DataAnnotations;
 using APIDatingApp.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Identity;
 
 namespace APIDatingApp.Entities
 {
-    public class AppUser
+    public class AppUser : IdentityUser<int>
     {
-        public int Id { get; set; }
+        // public int Id { get; set; }
+        // public string UserName { get; set; }
+        // public byte[] PasswordHash { get; set; }
+        // --> Estas 3 propiedades están dentro de "IdentityUser"
+        //     Le pasamos <int> para indicar que nuestro Id seguirá siendo un número
 
-        // [Required]
-        public string UserName { get; set; }
-
-        public byte[] PasswordHash { get; set; }
-
-        public byte[] PasswordSalt { get; set; }
+        // public byte[] PasswordSalt { get; set; }
+        // --> Esta directamente ya no es necesaria
 
         public DateOnly DateOfBirth { get; set; }
 
@@ -45,6 +46,11 @@ namespace APIDatingApp.Entities
 
         public List<Message> MessagesSent { get; set; }
         public List<Message> MessagesReceived { get; set; }
+
+
+        public ICollection<AppUserRole> UserRoles { get; set; }
+
+        
         // public int GetAge()
         // {
         //     return DateOfBirth.CalculateAge();

@@ -1,15 +1,22 @@
 using APIDatingApp.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace APIDatingApp.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser, AppRole, int,
+        IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+        IdentityRoleClaim<int>, IdentityUserToken<int>> 
+        //: DbContext // --> Por meter el Identitity
     {
         public DataContext(DbContextOptions options) : base(options)
         {
         }
 
-        public DbSet<AppUser> Users {get; set;}
+        // public DbSet<AppUser> Users {get; set;}
+        // --> Por meter el Identitity
 
         public DbSet<UserLike> Likes {get; set;}
 
@@ -17,7 +24,24 @@ namespace APIDatingApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
+
+            // INI: Configuración de tablas de Identity
+
+            modelBuilder.Entity<AppUser>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<AppRole>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+
+            // FIN: Configuración de tablas de Identity
 
             modelBuilder.Entity<UserLike>()
                 .HasKey(k => new {k.SourceUserId, k.TargetUserId});

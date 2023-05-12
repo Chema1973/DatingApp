@@ -29,7 +29,7 @@ export class NavComponent implements OnInit {
         console.log(response);
         if (!response) return;
         console.log(response);
-        this.username = response.userName;
+        this.username = response.username;
       }
     })
   }

@@ -54,6 +54,11 @@ export class AccountService {
 
   setCurrentUser(user: User) {
     // Se le llama al ""arrancar" la aplicación
+
+    user.roles = [];
+    const roles = this.getDecoratedToken(user.token).role;
+    Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
+
     console.log('setCurrentUser-Login::1');
     console.log(user);
     localStorage.setItem('user', JSON.stringify(user));
@@ -64,5 +69,9 @@ export class AccountService {
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+  }
+
+  getDecoratedToken(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
   }
 }

@@ -8,6 +8,8 @@ using System.Text;
 using APIDatingApp.Extensions;
 using APIDatingApp.Middleware;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity;
+using APIDatingApp.Entities;
 
 namespace APIDatingApp
 {
@@ -73,9 +75,11 @@ namespace APIDatingApp
             try
             {
                 var context = services.GetRequiredService<DataContext>();
+                var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
                 await context.Database.MigrateAsync();
                 // Hacemos la migración inicial de datos
-                await Seed.SeedUsers(context);
+                await Seed.SeedUsers(userManager, roleManager);
 
             } catch (Exception ex)
             {

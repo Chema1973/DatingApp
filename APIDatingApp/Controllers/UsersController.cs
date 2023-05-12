@@ -36,6 +36,7 @@ namespace APIDatingApp.Controllers
         }
 
         // [AllowAnonymous]
+        // [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<PagedList<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
         {
@@ -88,6 +89,7 @@ namespace APIDatingApp.Controllers
 
         }*/
 
+        // [Authorize(Roles = "Member")]
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDTO>> GetUserByUserName(string username)
         {

@@ -6,6 +6,8 @@ import { MemberEditComponent } from '../members/member-edit/member-edit.componen
 @Injectable({
   providedIn: 'root'
 })
+// TODO
+// CanDeactivate desprecated
 export class PreventUnsavedChangesGuard implements CanDeactivate<MemberEditComponent> {
   canDeactivate(component: MemberEditComponent): boolean {
     if (component.editForm?.dirty) {
