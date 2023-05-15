@@ -26,6 +26,8 @@ namespace APIDatingApp.Data
 
         public DbSet<Connection> Connections {get; set;}
 
+        public DbSet<Photo> Photos { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -76,7 +78,7 @@ namespace APIDatingApp.Data
                 .OnDelete(DeleteBehavior.Restrict);
             // --> Una persona (Sender) tiene muchas mensajes enviados (MessagesSent)
 
-
+           modelBuilder.Entity<Photo>().HasQueryFilter(p => p.IsApproved);
 
         }
     }

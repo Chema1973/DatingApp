@@ -105,7 +105,11 @@ namespace APIDatingApp.Controllers
         public async Task<ActionResult<MemberDTO>> GetUserByUserName(string username)
         {
             // return await _userRepository.GetMemberAsync(username);
-            return await _uow.UserRepository.GetMemberAsync(username);
+            // return await _uow.UserRepository.GetMemberAsync(username);
+
+            var currentUsername = User.GetUsername();
+            return await _uow.UserRepository.GetMemberAsync(username,
+                        isCurrentUser: currentUsername == username);
         }
 
         [HttpPut]
@@ -141,7 +145,7 @@ namespace APIDatingApp.Controllers
                 PublicId = result.PublicId
             };
 
-            if (user.Photos.Count == 0) photo.IsMain = true;
+            // if (user.Photos.Count == 0) photo.IsMain = true;
 
             user.Photos.Add(photo);
 
@@ -189,7 +193,8 @@ namespace APIDatingApp.Controllers
             // var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
             var user = await _uow.UserRepository.GetUserByUserNameAsync(User.GetUsername());
 
-            var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            // var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+            var photo = await _uow.PhotoRepository.GetPhotoById(photoId);
 
             if (photo == null) return NotFound();
 

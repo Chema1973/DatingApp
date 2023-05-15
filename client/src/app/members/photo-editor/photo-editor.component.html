@@ -1,13 +1,26 @@
 <div class="row mb-3" *ngIf="member">
     <div class="col-2 mb-1" *ngFor="let photo of member.photos">
-        <img src="{{photo.url}}" alt="photo of user" class="img-thumbnail mb-1">
+        <img src="{{photo.url}}" alt="photo of user" class="img-thumbnail mb-1"
+            [class.not-approved]="!photo.isApproved">
+        <!--<div class="text-center img-text centered" *ngIf="!photo.isApproved">-->
+            <span class="text-danger" *ngIf="!photo.isApproved">Awaiting approval</span>
+        <!--</div>-->
+        <div class="text-center">{{photo.isApproved}} - </div>
+
+        <!--TODO-->
+        <!--Estéticos!!-->
+        <!--El div de antes se queda en la primera imagen sólamente, aunuqe esté aprovada-->
         <div class="text-center">
             <button class="btn btn-sm"
-            [disabled]="photo.isMain"
-            (click)="setMainPhoto(photo)"
-            [ngClass]="photo.isMain ? 'btn-success active' : 'btn-outline-success'">Main</button>
+                [disabled]="photo.isMain || !photo.isApproved"
+                (click)="setMainPhoto(photo)"
+                [ngClass]="photo.isMain ? 'btn-success active' : 'btn-outline-success'">Main</button>
             <button class="btn btn-sm btn-danger" [disabled]="photo.isMain" (click)="deletePhoto(photo.id)"><i class="fa fa-trash"></i></button>
         </div>
+        <!--<img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1"
+            [class.not-approved]="!photo.isApproved"
+        >-->
+        
     </div>
 </div>
 
@@ -16,7 +29,7 @@
 
     <div class="col-3">
 
-        <h3>Ass photos</h3>
+        <h3>Add photos</h3>
 
         <div ng2FileDrop
                 [ngClass]="{'nv-file-over': hasBaseDropZoneOver}"
