@@ -73,10 +73,8 @@ export class RegisterComponent implements OnInit {
   }
 
   register() {
-    console.log(this.registerForm?.value);
     const dob = this.getDateOnly(this.registerForm.controls['dateOfBirth'].value);
     const values = {...this.registerForm.value, dateOfBirth: dob};
-    console.log(values);
 
     // let numeros = [10, 4, 7, 15, 3, 25];
     // console.log(numeros);     // Imprime un array.
@@ -86,20 +84,17 @@ export class RegisterComponent implements OnInit {
     // podemos acceder al número mayor del array numeros. Es como si le quitáramos los corchetes
     // ( “[]” ) al array.
 
-    // console.log(this.model);
 
     // this.accountService.register(this.model).subscribe({
       this.accountService.register(values).subscribe({
       next: () => {
       // next: response => {
-        // console.log(response);
         // --> Si "register" de "accountService" devuelve el "user"
         //     lo que pintaría "response" sería un "UserDTO"
         // this.cancel();
         this.router.navigateByUrl('/members')
       }, error: error => {
         // this.toastr.error(error.error)
-        // console.log(error);
         this.validationErrors = error
       }
     })
@@ -107,7 +102,6 @@ export class RegisterComponent implements OnInit {
   }
 
   cancel(){
-    console.log('cancelled');
     this.cancelRegister.emit(false);
     // --> Enviamos el evento al PADRE
     //     En este caso, en el "home.component.html" -> (cancelRegister)="cancelRegisterMode($event)"

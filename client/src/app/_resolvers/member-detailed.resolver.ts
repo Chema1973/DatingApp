@@ -23,7 +23,6 @@ export const MemberDetailedResolver: ResolveFn<Member> = (route: ActivatedRouteS
       // return inject(MembersService).getMember(route.paramMap.get('username')!);
 
       var username = route.paramMap.get('username');
-      console.log(route.paramMap);
       if(username)
         return inject(MembersService).getMember(username);
       else
@@ -51,7 +50,6 @@ export const MemberDetailedResolver: ResolveFn<Member> = (route: ActivatedRouteS
   constructor(private memberService: MembersService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<Member> {
-    console.log('Traza::4');
     return this.memberService.getMember(route.paramMap.get('username')!);
   }*/
 // }

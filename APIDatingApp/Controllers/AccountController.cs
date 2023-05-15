@@ -29,11 +29,11 @@ namespace APIDatingApp.Controllers
         public async Task<ActionResult<UserDto>> Register(RegisterDTO registerDTO)
         {
 
-            if (await UserExists(registerDTO.UserName)) return BadRequest("Username is taken");
+            if (await UserExists(registerDTO.Username)) return BadRequest("Username is taken");
 
             var user = _mapper.Map<AppUser>(registerDTO);
 
-            user.UserName = registerDTO.UserName.ToLower();
+            user.UserName = registerDTO.Username.ToLower();
 
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
@@ -44,7 +44,7 @@ namespace APIDatingApp.Controllers
             if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
 
             return new UserDto{
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = await _tokenService.CreateToken(user),
                 KnownAs = user.KnownAs,
                 Gender = user.Gender
@@ -60,7 +60,7 @@ namespace APIDatingApp.Controllers
 
             var user  = await _userManager.Users //.GetUserByUserNameAsync(loginDto.UserName);
                 .Include(p => p.Photos)
-                .SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
+                .SingleOrDefaultAsync(x => x.UserName == loginDto.Username);
 
             if (user == null) return Unauthorized("Invalid username");
 
@@ -69,7 +69,7 @@ namespace APIDatingApp.Controllers
             if (!result) return Unauthorized("Invalid password");
 
             return new UserDto{
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = await _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
                 KnownAs = user.KnownAs,

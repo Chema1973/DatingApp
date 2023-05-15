@@ -26,8 +26,9 @@ export class MemberEditComponent implements OnInit {
   constructor(private accountService: AccountService, private memberService: MembersService, private toastrService: ToastrService){
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: user => {
+        console.log(user);
+        console.log(this.user?.username);
         this.user = user;
-        console.log(this.user)
       }
     })
   }
@@ -37,20 +38,17 @@ export class MemberEditComponent implements OnInit {
   }
 
   loadMember() {
-    console.log('loadMember::1');
-    console.log(this.user);
     if (!this.user) return;
-    console.log('loadMember::2::' + this.user.username);
+    console.log(this.user.username);
     this.memberService.getMember(this.user.username).subscribe({
       next: member => {
+        console.log(member);
         this.member = member;
-        console.log(this.member)
       }
     })
   }
 
   updateMember() {
-    console.log('updateMember');
     this.memberService.updateMember(this.editForm?.value).subscribe({
       next: _ => {
         this.toastrService.success('Profile updated successfully');

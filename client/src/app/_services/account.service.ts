@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { User } from '../_models/user';
+import { PresenceService } from './presence.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,9 @@ export class AccountService {
   currentUser$ = this.currentUserSource.asObservable();
   // --> Establecemos un "Observable" que puede tener los valores de "User" o "null"
 
-  constructor(private http: HttpClient) { }
+  // --> Añadimos SignalR (PresenceService)
+
+  constructor(private http: HttpClient, private presenceService: PresenceService) { }
 
   login(model: any) {
     // Este método se llamacuando hace el login
@@ -24,13 +27,11 @@ export class AccountService {
       map((response: User) => {
         const user = response;
         if (user) {
-          console.log('Account-Login::1');
           // localStorage.setItem('user', JSON.stringify(user));
           // this.currentUserSource.next(user);
           this.setCurrentUser(user);
           // --> Es un eventEmitter. Dispara un evento a todos los suscriptores que están escuchando
           //     Es decir, está llamando a todos los suscriptores de "currentUser$"
-          console.log('Account-Login::2');
         }
       })
     );
@@ -59,16 +60,19 @@ export class AccountService {
     const roles = this.getDecoratedToken(user.token).role;
     Array.isArray(roles) ? user.roles = roles : user.roles.push(roles);
 
-    console.log('setCurrentUser-Login::1');
-    console.log(user);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSource.next(user);
-    console.log('setCurrentUser-Login::2');
+    console.log("SignalR::4");
+    this.presenceService.createHubConnection(user);
+    console.log("SignalR::5");
   }
 
   logout() {
     localStorage.removeItem('user');
     this.currentUserSource.next(null);
+    console.log("SignalR::6");
+    this.presenceService.stopHubConnection();
+    console.log("SignalR::7");
   }
 
   getDecoratedToken(token: string) {

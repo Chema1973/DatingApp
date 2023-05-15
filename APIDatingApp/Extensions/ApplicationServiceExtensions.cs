@@ -2,6 +2,7 @@ using APIDatingApp.Data;
 using APIDatingApp.Helpers;
 using APIDatingApp.Interfaces;
 using APIDatingApp.Services;
+using APIDatingApp.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace APIDatingApp.Extensions
@@ -32,6 +33,15 @@ namespace APIDatingApp.Extensions
             services.AddScoped<ILikesRepository, LikesRepository>();
             
             services.AddScoped<IMessageRepository, MessageRepository>();
+
+            services.AddSignalR();
+            // --> Añadimos SignalR
+            services.AddSingleton<PresenceTracker>();
+            // --> Uno de los casos en lo que tenemos que usar Singleton
+            //     Queremos que el servicio esté presente desde que se arranca la aplicación
+            //     y no nos vale que sea por solicutud Http (scoped)
+
+
 
             return services;
         }

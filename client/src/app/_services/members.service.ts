@@ -54,7 +54,6 @@ export class MembersService {
   // getMembers(page?: number, itemsPerPage?:number) {
   getMembers(userParams: UserParams) {
 
-    // console.log(Object.values(userParams).join('-'));
     const response = this.memberCache.get(Object.values(userParams).join('-'));
 
     if (response) return of(response);
@@ -71,6 +70,7 @@ export class MembersService {
       map(response => {
         this.memberCache.set(Object.values(userParams).join('-'), response);
         // --> Guardamos en "caché" las consultas
+        console.log(response);
         return response;
       })
     );
@@ -99,11 +99,9 @@ export class MembersService {
     // const member = this.members.find(x => x.userName === username);
     // if (member) return of(member);
 
-    // console.log(this.memberCache);
     const member = [...this.memberCache.values()]
     .reduce((arr, elem) => arr.concat(elem.result), [])
-    .find((member: Member) => member.userName === username);
-    // console.log(member);
+    .find((member: Member) => member.username === username);
     if (member) return of(member);
 
     return this.http.get<Member>(this.baseUrl + 'users/' + username);

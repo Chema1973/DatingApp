@@ -26,9 +26,7 @@ export class NavComponent implements OnInit {
     // this.getCurrentUser();
     this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: response => {
-        console.log(response);
         if (!response) return;
-        console.log(response);
         this.username = response.username;
       }
     })
@@ -42,22 +40,12 @@ export class NavComponent implements OnInit {
   }
 */
   login() {
-    console.log(this.accountService.currentUser$);
     // --> 
-    console.log(this.model);
     this.accountService.login(this.model).subscribe({
       // this.accountService.currentUser$.pipe(take(1)).subscribe({
       next: response => {
-        console.log(this.accountService.currentUser$);
-        console.log(response);
         this.username = this.model.username;
-        /*
-        console.log(this.accountService.currentUser$);
-        console.log('nav-login');
-        console.log(this.accountService.currentUser$);
-        console.log(response);
-        console.log(this.model);
-        */
+
         this.router.navigateByUrl('/members');
       }//,
       // next: _ => this.router.navigateByUrl('/members') //, // El '_' indica que no hay respuesta (al igual que '()')

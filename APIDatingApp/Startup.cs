@@ -10,6 +10,7 @@ using APIDatingApp.Middleware;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using APIDatingApp.Entities;
+using APIDatingApp.SignalR;
 
 namespace APIDatingApp
 {
@@ -58,7 +59,11 @@ namespace APIDatingApp
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+            app.UseCors(builder => builder
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials() // --> Por SignalR
+                .WithOrigins("https://localhost:4200"));
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -67,7 +72,12 @@ namespace APIDatingApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<PresenceHub>("hubs/presence");
+                // --> SignalR. Para identificar que usuario está conectado
+                endpoints.MapHub<MessageHub>("hubs/message");
+                // --> SignalR. Para identificar que usuario está enviando mensajes
             });
+
 
 
             using var scope = app.ApplicationServices.CreateScope();
@@ -78,6 +88,13 @@ namespace APIDatingApp
                 var userManager = services.GetRequiredService<UserManager<AppUser>>();
                 var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
                 await context.Database.MigrateAsync();
+                // context.Connections.RemoveRange(context.Connections);
+
+                // await context.Database.ExecuteSqlRawAsync("TRUNCATE TABLE [Connections]");
+                // --> Esto es para SQL
+                await context.Database.ExecuteSqlRawAsync("DELETE FROM [Connections]");
+                // --> Esto es para SQLLite
+
                 // Hacemos la migración inicial de datos
                 await Seed.SeedUsers(userManager, roleManager);
 
