@@ -19,7 +19,7 @@ namespace APIDatingApp.Extensions
             services.AddCors();
 
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserRepository, UserRepository>();
+            
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -30,9 +30,11 @@ namespace APIDatingApp.Extensions
             services.AddScoped<LogUserActivity>();
             // --> Añadimos el filtro de actividad del usuario
 
-            services.AddScoped<ILikesRepository, LikesRepository>();
+            // services.AddScoped<IUserRepository, UserRepository>();
+            // services.AddScoped<ILikesRepository, LikesRepository>();
+            // services.AddScoped<IMessageRepository, MessageRepository>();
+            // --> Sustituimos los 3 anteriores por el "IUnitOfWork"
             
-            services.AddScoped<IMessageRepository, MessageRepository>();
 
             services.AddSignalR();
             // --> Añadimos SignalR
@@ -41,7 +43,7 @@ namespace APIDatingApp.Extensions
             //     Queremos que el servicio esté presente desde que se arranca la aplicación
             //     y no nos vale que sea por solicutud Http (scoped)
 
-
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

@@ -17,19 +17,23 @@ namespace APIDatingApp.Controllers
     [Authorize]
     public class UsersController : BaseApiController
     {
-        private readonly IUserRepository _userRepository;
+        // private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
+
+        private readonly IUnitOfWork _uow;
 
         // private readonly DataContext _context;
 
         public UsersController(// DataContext context
-            IUserRepository userRepository,
+            // IUserRepository userRepository,
+            IUnitOfWork uow,
             IMapper mapper,
             IPhotoService photoService
         )
         {
-            _userRepository = userRepository;
+            _uow = uow;
+            // _userRepository = userRepository;
             _mapper = mapper;
             _photoService = photoService;
             //_context = context;
@@ -38,18 +42,24 @@ namespace APIDatingApp.Controllers
         // [AllowAnonymous]
         // [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<PagedList<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
+        // public async Task<ActionResult<PagedList<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
+        public async Task<ActionResult<IEnumerable<MemberDTO>>> GetUsers([FromQuery]UserParams userParams)
         {
 
-            var currentUser = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
-            userParams.CurrentUsername = currentUser.UserName;
+            // var currentUser = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            // var currentUser = await _uow.UserRepository.GetUserByUserNameAsync(User.GetUsername());
+            var gender = await _uow.UserRepository.GetUserGender(User.GetUsername());
+            // userParams.CurrentUsername = currentUser.UserName;
+            userParams.CurrentUsername = User.GetUsername();
 
             if (string.IsNullOrEmpty(userParams.Gender))
             {
-                userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+                // userParams.Gender = currentUser.Gender == "male" ? "female" : "male";
+                userParams.Gender = gender == "male" ? "female" : "male";
             }
 
-            var users = await _userRepository.GetMembersAsync(userParams);
+            // var users = await _userRepository.GetMembersAsync(userParams);
+            var users = await _uow.UserRepository.GetMembersAsync(userParams);
 
             Response.AddPaginationHeader(new PaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages));
 
@@ -73,7 +83,8 @@ namespace APIDatingApp.Controllers
         {
             // return await _context.Users.FindAsync(id);
             // return await _userRepository.GetUserByIdAsync(id);
-            var user = await _userRepository.GetUserByIdAsync(id);
+            // var user = await _userRepository.GetUserByIdAsync(id);
+            var user = await _uow.UserRepository.GetUserByIdAsync(id);
             return _mapper.Map<MemberDTO>(user);
         }
 
@@ -93,19 +104,22 @@ namespace APIDatingApp.Controllers
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDTO>> GetUserByUserName(string username)
         {
-            return await _userRepository.GetMemberAsync(username);
+            // return await _userRepository.GetMemberAsync(username);
+            return await _uow.UserRepository.GetMemberAsync(username);
         }
 
         [HttpPut]
         public async Task<ActionResult> UpdateUser(MemberUpdateDTO memberUpdateDTO){
             var username = User.GetUsername(); // User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var user = await _userRepository.GetUserByUserNameAsync(username);
+            // var user = await _userRepository.GetUserByUserNameAsync(username);
+            var user = await _uow.UserRepository.GetUserByUserNameAsync(username);
 
             if (user == null) return NotFound();
 
             _mapper.Map(memberUpdateDTO, user);
 
-            if (await _userRepository.SaveAllAsync()) return NoContent();
+            // if (await _userRepository.SaveAllAsync()) return NoContent();
+            if (await _uow.Complete()) return NoContent();
 
             return BadRequest("Failed to update user");
         }
@@ -113,7 +127,8 @@ namespace APIDatingApp.Controllers
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDTO>> AddPhoto([FromForm]IFormFile file)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            // var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var user = await _uow.UserRepository.GetUserByUserNameAsync(User.GetUsername());
 
             if (user == null) return NotFound();
 
@@ -130,7 +145,8 @@ namespace APIDatingApp.Controllers
 
             user.Photos.Add(photo);
 
-            if (await _userRepository.SaveAllAsync()){  
+            // if (await _userRepository.SaveAllAsync()){  
+            if (await _uow.Complete()){  
                 //return _mapper.Map<PhotoDTO>(photo);
                 return CreatedAtAction(nameof(GetUserByUserName),
                 new {username = user.UserName}, _mapper.Map<PhotoDTO>(photo));
@@ -144,7 +160,8 @@ namespace APIDatingApp.Controllers
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
 
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            // var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var user = await _uow.UserRepository.GetUserByUserNameAsync(User.GetUsername());
 
             if (user == null) return NotFound();
 
@@ -160,7 +177,8 @@ namespace APIDatingApp.Controllers
 
             photo.IsMain = true;
 
-            if (await _userRepository.SaveAllAsync()) return NoContent();
+            // if (await _userRepository.SaveAllAsync()) return NoContent();
+            if (await _uow.Complete()) return NoContent();
 
             return BadRequest("Problem setting main photo");
         }
@@ -168,7 +186,8 @@ namespace APIDatingApp.Controllers
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
-            var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            // var user = await _userRepository.GetUserByUserNameAsync(User.GetUsername());
+            var user = await _uow.UserRepository.GetUserByUserNameAsync(User.GetUsername());
 
             var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
 
@@ -185,7 +204,8 @@ namespace APIDatingApp.Controllers
 
             user.Photos.Remove(photo);
 
-            if (await _userRepository.SaveAllAsync()) return Ok();
+            // if (await _userRepository.SaveAllAsync()) return Ok();
+            if (await _uow.Complete()) return Ok();
 
             return BadRequest("Problem deleting photo!!");
         }

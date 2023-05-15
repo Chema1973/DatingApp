@@ -47,6 +47,7 @@ export class NavComponent implements OnInit {
         this.username = this.model.username;
 
         this.router.navigateByUrl('/members');
+        this.model = {};
       }//,
       // next: _ => this.router.navigateByUrl('/members') //, // El '_' indica que no hay respuesta (al igual que '()')
       // error: error => this.toastr.error(error.error) // console.log(error) // 

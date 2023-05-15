@@ -14,7 +14,7 @@ namespace APIDatingApp.Interfaces
 
         Task<PagedList<MessageDTO>> GetMessagesForUser(MessageParamas messageParamas);
         Task<IEnumerable<MessageDTO>> GetMessageThread(string currentUserName, string recipientUserName);
-        Task<bool> SaveAllAsync();
+        // Task<bool> SaveAllAsync();
 
         void AddGroup(Group group);
 

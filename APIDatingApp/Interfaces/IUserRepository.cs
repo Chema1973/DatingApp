@@ -7,7 +7,8 @@ namespace APIDatingApp.Interfaces
     public interface IUserRepository
     {
         void Update(AppUser user);
-        Task<bool> SaveAllAsync();
+        // Task<bool> SaveAllAsync();
+        // --> Se quita porque lo hará "IUnitOfWork"
         
         Task<IEnumerable<AppUser>> GetUsersAsync();
 
@@ -19,5 +20,7 @@ namespace APIDatingApp.Interfaces
         Task<PagedList<MemberDTO>> GetMembersAsync(UserParams userParams);
 
         Task<MemberDTO> GetMemberAsync(string username);
+
+        Task<string> GetUserGender(string username);
     }
 }

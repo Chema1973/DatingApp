@@ -16,11 +16,16 @@ namespace APIDatingApp.Helpers
 
             var userId = resultContext.HttpContext.User.GetUserId();
 
-            var repo = resultContext.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
+            // var repo = resultContext.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
             // --> Podemos coger el repositorio que queramos
-            var user = await repo.GetUserByIdAsync(userId);
+            // var user = await repo.GetUserByIdAsync(userId);
+            // user.LastActive = DateTime.UtcNow;
+            // await repo.SaveAllAsync();
+
+            var uow = resultContext.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+            var user = await uow.UserRepository.GetUserByIdAsync(userId);
             user.LastActive = DateTime.UtcNow;
-            await repo.SaveAllAsync();
+            await uow.Complete();
         }
     }
 }
